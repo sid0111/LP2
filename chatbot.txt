@@ -1,0 +1,45 @@
+import re
+
+def chatbot_response(user_input):
+    user_input = user_input.lower()
+
+    #\b: This is a word boundary in regular expressions, which ensures that the matched word is not a part of a longer word. 
+    # For example, it would match "hi" but not "this".
+    responses = {
+        r"\b(1|hello|hi|hey)\b": "Hello! Welcome to our medical store. How can I assist you today?",
+        r"\b(2|how are you)\b": "I'm here to help you with your medicine needs!",
+        r"\b(3|order status|track order)\b": "Please provide your prescription/order ID to check the status.",
+        r"\b(4|delivery|shipping time)\b": "We offer same-day delivery within city limits and 2-3 days outside.",
+        r"\b(5|return policy)\b": "We accept returns only for unopened and undamaged products within 3 days of delivery.",
+        r"\b(6|thank you|thanks)\b": "You're welcome! Let me know if you need anything else.",
+        r"\b(7|price|cost)\b": "Please specify the medicine name to check its price.",
+        r"\b(8|paracetamol)\b": "Paracetamol 500mg costs ₹20 for a strip of 10 tablets.",
+        r"\b(9|cough syrup)\b": "We have Benadryl and Corex. Prices range from ₹60 to ₹120.",
+        r"\b(10|fever)\b": "For fever, we recommend Paracetamol or Crocin. Do you have a prescription?",
+        r"\b(11|pain relief)\b": "We offer Volini spray, Combiflam, and more. Do you want tablets or ointment?",
+        r"\b(12|cold|flu)\b": "For cold/flu, medicines like Cetirizine or Dolo 650 are common. A prescription is advised.",
+        r"\b(13|antibiotics)\b": "We stock antibiotics like Azithromycin and Amoxicillin. Prescription is required.",
+        r"\b(14|buy|order)\b": "You can order medicines on our website or WhatsApp us with your prescription.",
+        r"\b(15|payment methods)\b": "We accept cash, UPI, cards, and net banking.",
+        r"\b(16|store hours|timing)\b": "Our medical store is open from 9 AM to 9 PM all days.",
+        r"\b(17|location|address)\b": "We are located at ABC Medical Store, Green Street, City Center.",
+        r"\b(18|prescription)\b": "Some medicines require a doctor's prescription. You can upload it during order.",
+        r"\b(19|bye|exit)\b": "Goodbye! Take care and stay healthy!"
+    }
+
+    for pattern, response in responses.items():
+        if re.search(pattern, user_input):
+            return response
+    
+    return "Sorry, I didn't understand that. Please ask about a specific medicine or service."
+
+# Main loop
+print("Welcome to our Medical Shop Chatbot! Type 'exit' to end the conversation.")
+
+while True:
+    user_message = input("You: ")
+    if user_message.lower() in ["bye", "exit"]:
+        print("Chatbot: Goodbye! Take care and stay healthy! 💊")
+        break
+    response = chatbot_response(user_message)
+    print("Chatbot:", response)

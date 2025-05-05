@@ -1,0 +1,68 @@
+import heapq
+
+def astar(maze, start, end):
+    rows, cols = len(maze), len(maze[0])
+    open_list = []
+    heapq.heappush(open_list, (0, start))
+    came_from = {}
+    g_score = {start: 0}
+
+    while open_list:
+        _, current = heapq.heappop(open_list)
+
+        if current == end:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            return path[::-1]
+
+        for dx, dy in [(-1,0), (1,0), (0,-1), (0,1)]:
+            neighbor = (current[0]+dx, current[1]+dy)
+            if 0 <= neighbor[0] < rows and 0 <= neighbor[1] < cols and maze[neighbor[0]][neighbor[1]] != 1:
+                temp_g = g_score[current] + 1
+                if neighbor not in g_score or temp_g < g_score[neighbor]:
+                    g_score[neighbor] = temp_g
+                    f_score = temp_g + abs(neighbor[0]-end[0]) + abs(neighbor[1]-end[1])
+                    heapq.heappush(open_list, (f_score, neighbor))
+                    came_from[neighbor] = current
+    return None
+
+def print_maze(maze, path):
+    for r in range(len(maze)):
+        for c in range(len(maze[0])):
+            if (r,c) in path:
+                print('*', end=' ')
+            elif maze[r][c] == 1:
+                print('#', end=' ')
+            else:
+                print('_', end=' ')
+        print()
+
+# --- TAKE INPUT FROM USER ---
+
+rows = int(input("Enter number of rows: "))
+cols = int(input("Enter number of columns: "))
+
+print("Enter the maze row by row (0 = empty, 1 = wall):")
+maze = []
+for i in range(rows):
+    row = list(map(int, input(f"Row {i+1}: ").split()))
+    maze.append(row)
+
+start_x = int(input("Enter start X (row index): "))
+start_y = int(input("Enter start Y (col index): "))
+end_x = int(input("Enter end X (row index): "))
+end_y = int(input("Enter end Y (col index): "))
+
+start = (start_x, start_y)
+end = (end_x, end_y)
+
+# --- CALL ASTAR ---
+path = astar(maze, start, end)
+
+if path:
+    print_maze(maze, path)
+    print("Path found!")
+else:
+    print("No path found.")

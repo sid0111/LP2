@@ -1,0 +1,54 @@
+class DisjointSet:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    
+    def find(self, u):
+        if self.parent[u] != u:
+            self.parent[u] = self.find(self.parent[u])
+        return self.parent[u]
+    
+    def union(self, u, v):
+        root_u = self.find(u)
+        root_v = self.find(v)
+        
+        if root_u != root_v:
+            if self.rank[root_u] > self.rank[root_v]:
+                self.parent[root_v] = root_u
+            elif self.rank[root_u] < self.rank[root_v]:
+                self.parent[root_u] = root_v
+            else:
+                self.parent[root_v] = root_u
+                self.rank[root_u] += 1
+
+def kruskal(graph):
+    edges = []
+    for node in graph:
+        for neighbor, weight in graph[node]:
+            edges.append((weight, node, neighbor))
+    
+    edges.sort()  # Sort edges by weight
+    
+    mst = []
+    disjoint_set = DisjointSet(len(graph))
+    node_indices = {node: i for i, node in enumerate(graph)}  # Map nodes to indices
+    
+    for weight, u, v in edges:
+        u_index = node_indices[u]
+        v_index = node_indices[v]
+        
+        if disjoint_set.find(u_index) != disjoint_set.find(v_index):
+            mst.append((u, v, weight))
+            disjoint_set.union(u_index, v_index)
+    
+    return mst
+
+# Example usage:
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('C', 2), ('D', 5)],
+    'C': [('D', 1)],
+    'D': []
+}
+
+print(kruskal(graph))

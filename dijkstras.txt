@@ -1,0 +1,44 @@
+import heapq
+
+def dijkstra(graph, start):
+    dist = {node: float('inf') for node in graph} #initialize all to infinity
+    print(dist)
+    dist[start] = 0 #start to zero
+    pq = [(0, start)]
+    print(pq)
+
+    while pq:
+        current_dist, current_node = heapq.heappop(pq)
+        if current_dist > dist[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node]:
+            distance = current_dist + weight
+            if distance < dist[neighbor]:
+                dist[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+    
+    return dist
+
+# Example usage:
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('C', 2), ('D', 5)],
+    'C': [('D', 1)],
+    'D': []
+}
+print(dijkstra(graph, 'A'))
+
+'''
+| Step | Node | Distance                  | Action          |
+| ---- | ---- | ------------------------- | --------------- |
+| 1    | A    | 0 → 0                     | Start node      |
+| 2    | B    | 0 + 1 = 1                 | Update B        |
+| 3    | C    | 0 + 4 = 4                 | Update C        |
+| 4    | B    | 1 → process               |                 |
+| 5    | C    | 1 + 2 = 3 → better than 4 | Update C (to 3) |
+| 6    | D    | 1 + 5 = 6                 | Update D        |
+| 7    | C    | 3 → process               |                 |
+| 8    | D    | 3 + 1 = 4 → better than 6 | Update D        |
+| 9    | D    | 4 → done                  |                 |
+'''

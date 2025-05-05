@@ -1,0 +1,44 @@
+import heapq
+
+def a_star(graph, start, goal, heuristic):
+    open_list = []
+    heapq.heappush(open_list, (0 + heuristic[start], 0, start, [start]))  # (f, g, node, path)
+    visited = set()
+
+    while open_list:
+        f, g, current, path = heapq.heappop(open_list)
+
+        if current == goal:
+            return path, g  # return path and total cost
+
+        if current in visited:
+            continue
+        visited.add(current)
+
+        for neighbor, cost in graph[current]:
+            if neighbor not in visited:
+                total_cost = g + cost
+                heapq.heappush(open_list, (total_cost + heuristic[neighbor], total_cost, neighbor, path + [neighbor]))
+
+    return None, float('inf')  # if no path found
+
+# Example graph (adjacency list with weights)
+graph = {
+    'A': [('B', 1), ('C', 4)],
+    'B': [('C', 2), ('D', 5)],
+    'C': [('D', 1)],
+    'D': []
+}
+
+# Heuristic values (estimated cost from each node to goal 'D')
+heuristic = {
+    'A': 7,
+    'B': 6,
+    'C': 2,
+    'D': 0
+}
+
+# Run A* search
+path, cost = a_star(graph, 'A', 'D', heuristic)
+print("Path:", path)
+print("Total cost:", cost)
